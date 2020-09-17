@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Tweets of followed users</h1>
+
+<% user_follows_ids =  current_user.follows.present? ? current_user.follows.pluck(:following_id) : "" %>
+<% @tweets = Tweet.where(user_id: user_follows_ids) %>
+<% if @tweets.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Tweet</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @tweets.each do |tw| %>
+        <tr>
+          <td><%= tw.try(:name) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% else %>
+  <table></table>
+<% end %>
+
+<h2>  
+  Follow / Unfollow User
+</h2>
+
+  <% @users = User.all.where.not(id: current_user.id) %>
+  <%=  select_tag "user_id", options_from_collection_for_select(@users, "id", "firstname"), :id => "userf",:style =>"width:15%;", prompt: "Select User" %>
+  <button type="button" class="followbtn">Follow User</button><br>
+
+  <% @users = User.all.where.not(id: current_user.id) %>
+  <%=  select_tag "user_id", options_from_collection_for_select(@users, "id", "firstname"), :id => "useruf",:style =>"width:15%;", prompt: "Select User" %>
+  <button type="button" class="unfollowbtn">UnFollow User</button>
+
+<br>
+
+
+<script type="text/javascript">
+  $(".followbtn").click(function(){
+    var id = $("#userf").val();
+    window.location.href = "/followuser?following_id="+id;
+  });
+
+  $(".unfollowbtn").click(function(){
+    var id = $("#useruf").val();
+    window.location.href = "/unfollowuser?following_id="+id;
+  });  
+</script>
