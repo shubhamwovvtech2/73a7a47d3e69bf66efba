@@ -1,0 +1,33 @@
+  <table>
+    <thead>
+      <tr>
+        <th>User Tweets</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @@tweetlist.each do |tw| %>
+        <tr>
+          <td><a href="/usersfollow_list?id=<%= tw.user.id %>"><%= tw.try(:name) %></a></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+    <table>
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @followings.each do |fw| %>
+        <tr>
+          <td><%= fw.try(:firstname) %></td>
+          <td><%= fw.try(:lastname) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

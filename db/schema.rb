@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_17_130659) do
+ActiveRecord::Schema.define(version: 2020_09_17_145550) do
 
   create_table "follows", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "followed_by_id"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2020_09_17_130659) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_follow"
+    t.integer "user_id"
   end
 
   create_table "homes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|

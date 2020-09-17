@@ -1,5 +1,7 @@
 class FollowsController < ApplicationController
+
   before_action :set_follow, only: [:show, :edit, :update, :destroy]
+
 
   # GET /follows
   # GET /follows.json
@@ -24,7 +26,7 @@ class FollowsController < ApplicationController
   # POST /follows
   # POST /follows.json
   def create
-    @follow = Follow.new(follow_params)
+    @follow = Follow.new(follow_params.merge(followed_by_id: current_user.id))
 
     respond_to do |format|
       if @follow.save
@@ -39,24 +41,32 @@ class FollowsController < ApplicationController
 
 
   def followuser
-    byebug
-    if Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: true).present?
+
+    if Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: [:is_follow]).present? == true
       redirect_to "/homes",notice: "Already followed"
-    else
-      @followuser = Follow.create(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: true)
-      redirect_to "/homes",notice: "User followed successfully."
+    end
+    if Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: [:is_follow]).present? == false
+       Follow.create(following_id: params[:following_id],user_id: current_user.id,followed_by_id: current_user.id,is_follow: true) 
+       redirect_to "/homes",notice: "User followed successfully."
     end
   end
 
   def unfollowuser
-    if Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: false).present?
+    if Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: false).present? == true
       redirect_to "/homes",notice: "Already unfollowed"
-    else
-      @followuser = Follow.create(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: false)
+    elsif Follow.find_by(following_id: params[:following_id],followed_by_id: current_user.id,is_follow: false).present? == false
+       Follow.create(following_id: params[:following_id],followed_by_id: current_user.id,user_id: current_user.id,is_follow: false)
       redirect_to "/homes",notice: "User unfollowed successfully."
     end
   end
 
+
+  def usersfollow_list
+      current_user = User.find_by(id: params[:id])
+      @tweetlist = current_user.tweets
+      @followings = User.where(id: current_user.follows.pluck(:following_id))
+
+  end
 
   # PATCH/PUT /follows/1
   # PATCH/PUT /follows/1.json
@@ -90,6 +100,6 @@ class FollowsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def follow_params
-      params.require(:follow).permit(:followed_by_id, :following_id,:is_follow)
+      params.require(:follow).permit(:followed_by_id, :following_id,:is_follow,:user_id)
     end
 end

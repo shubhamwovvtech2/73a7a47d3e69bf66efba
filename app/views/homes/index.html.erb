@@ -15,7 +15,7 @@
     <tbody>
       <% @tweets.each do |tw| %>
         <tr>
-          <td><%= tw.try(:name) %></td>
+          <td><a href="/usersfollow_list?id=<%= tw.user.id %>"><%= tw.try(:name) %></a></td>
         </tr>
       <% end %>
     </tbody>
@@ -42,11 +42,34 @@
 <script type="text/javascript">
   $(".followbtn").click(function(){
     var id = $("#userf").val();
-    window.location.href = "/followuser?following_id="+id;
+
+   $.ajax({
+        type: "POST",
+        url: "/followuser",
+        data: {  following_id: id, is_follow: true  },
+        success() {
+          },
+          error() {
+          }
+      })
+
+    // window.location.href = "/followuser?following_id="+id;
   });
 
   $(".unfollowbtn").click(function(){
     var id = $("#useruf").val();
-    window.location.href = "/unfollowuser?following_id="+id;
+
+   $.ajax({
+        type: "POST",
+        url: "/unfollowuser",
+        data: { following_id: id, is_follow: false } ,
+        success() {
+          },
+          error() {
+          }
+      })
+
+
+    // window.location.href = "/unfollowuser?following_id="+id;
   });  
 </script>
